@@ -1,0 +1,95 @@
+~介面操作~
+pwd: 顯示所在位置
+cd : 進入某資料夾
+cd .. :回到上一層
+ls: 顯示資料夾的檔案
+clear: 清空Bash頁面
+
+~用戶配置~
+//顯示用戶名
+git config user.name
+//顯示用戶信箱地址
+git config user.email
+//設定本地(或全域)用戶名
+git config (--global) user.name"<用戶名>
+//設定本地(或全域)用戶信箱
+git config (--global) user.email"<用戶信箱>"
+//查看改過的指令
+git config --list
+//改指令
+git config --global alias.st status
+git config --global alias.br branch
+git config --global alias.cmt commit
+git config --global alias.dev devlop
+
+~版控操作(本地master)~
+//在某個資料夾建Repo
+git init
+
+//新增 某個/全部改過/某類型 檔案到暫存區
+git add <file>
+git add . 
+git add *.txt
+//移除 某個/全部改過/某類型 檔案從暫存區
+add --> reset
+
+//提交+提交訊息
+git commit -m"<提交訊息>
+
+~checkout V.S. reset
+//"head"，"master"一起移動
+git reset --hard<版本>
+//只有"head"移動
+git checkout<版本>
+
+
+~分支、合併~
+//開分支
+git br develop
+//刪除分支
+git br -d <分支名稱>
+//看在哪個分支
+git br
+//切換到某分之
+git checkout <分支名稱>
+//合併
+git merge<要合併到的分支名稱>
+//不快轉合併
+git merge<要合併到的分支名稱> --no-ff
+
+~檢查和比較~
+//查看資料夾內提交的狀況
+git status
+//版本資訊
+git show<版本>
+//commit的紀錄
+git log
+//操作紀錄
+git reflog
+
+~版控操作(遠端origin)~
+//本地已建立repo推到遠端建立repo:
+git remote add origin "https://github.com/r889165/gitTest.git"
+git push -u origin master
+//刪除之前的遠端連結
+git remote remove origin
+//遠端已建立repo回本地建立repo:
+git clone<url>
+
+//本地推送到遠端
+git push origin master
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
