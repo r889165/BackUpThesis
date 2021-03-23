@@ -99,7 +99,7 @@ p2 = (-2*np.pi*fo*bt) - 1j*(2*np.pi*fo*np.sqrt(1-bt**2))
 z1 = 0.0 + 0j
 z2 = 0.0 - 0j
 Ao = 1
-k1 = Go
+k1 = -Go
 k2 = 1
 const = Ao*k1*k2
 
@@ -107,7 +107,7 @@ const = Ao*k1*k2
 ##4.過濾想要的頻率區間，去轉成速度頻域圖
 #範例:correct跟test會一樣
 freq_upperlimit= 200
-freq_lowerlimit= 0
+freq_lowerlimit= 20
 
 V_correctData=[0]*len(fd)
 for i in range(len(fd)):
@@ -127,13 +127,11 @@ plt.subplot(2,1,1)
 plt.xlabel("freq(Hz)")
 plt.ylabel("amp(in/s)")
 plt.xlim(0,freq_upperlimit)
-plt.ylim(0,1)
 plt.plot(fd, amp_V_correctData)
 plt.subplot(2,1,2)
 plt.xlabel("freq(Hz)")
 plt.ylabel("amp(in/s)")
 plt.xlim(0,freq_upperlimit)
-plt.ylim(0,1)
 plt.plot(fd, amp_V_testData)
 
             
@@ -200,15 +198,43 @@ X1=1/W**2
 
 
 
-
-
-#(2)強制過原點簡單迴歸:Y2=0+b3*X2
+#(2)強制過原點簡單迴歸:Y2=0+b2*X2
 Y2=-b/(a**2+b**2)
 X2=1/W
 
 
+#迴歸資料寫進新的xls檔案裡面
+import xlwt
+linearRegressionData= xlwt.Workbook()
+sheet1= linearRegressionData.add_sheet('data')
 
-
+sheet1.write(0,0,"freq")
+sheet1.write(0,1,"X1")
+sheet1.write(0,2,"Y1")
+sheet1.write(0,3,"X2")
+sheet1.write(0,4,"Y2")
+k=1
+for i in W:
+    sheet1.write(k,0,i)
+    k=k+1
+k=1
+for i in X1:
+    sheet1.write(k,1,i)
+    k=k+1
+k=1
+for i in Y1:
+    sheet1.write(k,2,i)
+    k=k+1
+k=1
+for i in X2:
+    sheet1.write(k,3,i)
+    k=k+1
+k=1
+for i in Y2:
+    sheet1.write(k,4,i)
+    k=k+1
+    
+linearRegressionData.save('linearRegressionData.xls')
 
 
 print("G(敏感度)=")
@@ -216,7 +242,7 @@ print("W0(自然頻率)=")
 print("h(阻尼常數)=")
 print("--------------------------")
 print("R1^2=")
-print("R1^2=")
+print("R2^2=")
 
 
     
