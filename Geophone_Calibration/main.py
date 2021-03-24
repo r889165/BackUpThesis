@@ -142,7 +142,7 @@ for i in range(len(fd)):
     if V_testData[i]==0:
         T_testData[i]=0
     else:
-        T_testData[i]=  E_testData[i]/V_testData[i]
+        T_testData[i]= E_testData[i]/V_testData[i]
 
 T_correctData=[0]*len(fd)
 for i in range(len(fd)):
@@ -195,8 +195,6 @@ W=fd[start:end]
 #(1)簡單回歸:Y1=b0+b1*X1
 Y1=a/(a**2+b**2)
 X1=1/W**2
-
-
 
 #(2)強制過原點簡單迴歸:Y2=0+b2*X2
 Y2=-b/(a**2+b**2)
