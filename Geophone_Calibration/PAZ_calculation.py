@@ -98,15 +98,15 @@ fre = np.linspace(0, nof, nof+1)
 for i in range(0, nof+1, 1):
     fre[i] = 10**(fl_p + df_p * i)
 wn = 2*np.pi*fn
-Ao = 1/np.abs( (1j*wn-z1)*(1j*wn-z2)/(1j*wn-p1)/(1j*wn-p2) )
+Ao = 1
 k1 = Go
-k2 = (2**(Res)-1)/5 # full scale = +/- 2.5V for 16 bit datalogger
+k2 = 1
 const = Ao*k1
 w = 2*np.pi*fre
 Amp = np.abs( const * (1j*w-z1)*(1j*w-z2)/(1j*w-p1)/(1j*w-p2) )
 Pha = np.angle( const * (1j*w-z1)*(1j*w-z2)/(1j*w-p1)/(1j*w-p2), deg=True)
-
-
+k3 = 1/np.abs( (1j*wn-z1)*(1j*wn-z2)/(1j*wn-p1)/(1j*wn-p2) )
+k4 = (2**(Res)-1)/5 # full scale = +/- 2.5V for 16 bit datalogger
 
 
 Fig, ax = plt.subplots(2, 1, figsize=(6,8))
@@ -114,7 +114,7 @@ ax[0].plot(fre, Amp, 'r-')
 ax[0].grid(True)
 ax[0].set_ylim(0.05, 2.0)
 #ax[0].set_ylim(5, 100)
-ax[0].set_xlim(5, 500)
+ax[0].set_xlim(5, 200)
 #ax[0].set_ylabel("$Amplitude (V/m/s)$", fontsize=14)
 ax[0].set_ylabel("$Amplitude (V/in/s)$", fontsize=14)
 ax[1].semilogx(fre, Pha, 'k-')
