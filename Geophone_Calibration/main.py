@@ -106,8 +106,8 @@ const = Ao*k1*k2
 
 ##4.過濾想要的頻率區間，去轉成速度頻域圖
 #範例:correct跟test會一樣
-freq_upperlimit= 200
-freq_lowerlimit= 20
+freq_upperlimit= 1000
+freq_lowerlimit= 
 
 V_correctData=[0]*len(fd)
 for i in range(len(fd)):
