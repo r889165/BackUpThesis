@@ -42,10 +42,14 @@ plt.ylim((-24, 24))
 
 #反轉過去，確定scipy.fftpack這個套件的轉換可不可行
 fd = np.linspace(0.0, sampling_rate, int(sample_num), endpoint=False)
+fd=fd[0:int(sample_num/2)]
 vib_fft = fft(vib)
-mag = 2/sample_num * np.abs(vib_fft) # Magnitude
+vib_fft= 2/sample_num *vib_fft[0:int(sample_num/2)]
+
+
+mag = np.abs(vib_fft) # Magnitude
 
 plt.figure()
-plt.plot(fd[0:int(sample_num/2)], mag[0:int(sample_num/2)])
+plt.plot(fd, mag)
 plt.xlabel('Hz')
 plt.ylabel('Amp')
