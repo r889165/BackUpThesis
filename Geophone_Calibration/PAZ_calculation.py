@@ -110,7 +110,7 @@ Pha = np.angle( const * (1j*w-z1)*(1j*w-z2)/(1j*w-p1)/(1j*w-p2), deg=True)
 
 
 Fig, ax = plt.subplots(2, 1, figsize=(6,8))
-ax[0].plot(fre, Amp, 'r-')
+ax[0].loglog(fre, Amp, 'r-')
 ax[0].grid(True)
 ax[0].set_ylim(0.05, 2.0)
 #ax[0].set_ylim(5, 100)
