@@ -75,8 +75,8 @@ plt.plot(fd, amp_E_testData)
 #範例:GS-20DX
 fo = 10 # (Hz)
 fn = 200 # (Hz)
-m = 0.388 # (oz) 
-Go = 0.7 # 0.70 (V/in/s)
+m = 11 # (g) 
+Go = 27.6 # (V/m/s)
 Rc = 395 # (Ohm)
 Rs = -9999
 bo = 0.3 # = 30 (%)
@@ -98,16 +98,20 @@ p1 = (-2*np.pi*fo*bt) + 1j*(2*np.pi*fo*np.sqrt(1-bt**2))
 p2 = (-2*np.pi*fo*bt) - 1j*(2*np.pi*fo*np.sqrt(1-bt**2))
 z1 = 0.0 + 0j
 z2 = 0.0 - 0j
-Ao = 1
+
+Ao= 1
 k1 = -Go
 k2 = 1
 const = Ao*k1*k2
-wd=2*np.pi*fd
+wd= 2*np.pi*fd
+Amp = np.abs( const* (1j*wd-z1)*(1j*wd-z2)/(1j*wd-p1)/(1j*wd-p2) )
+Pha = np.angle( const* ((1j*wd-z1)*(1j*wd-z2))/((1j*wd-p1)*(1j*wd-p2)), deg=True)
+
 
 ##4.過濾想要的頻率區間，去轉成速度頻域圖
 #範例:correct跟test會一樣
-freq_lowerlimit= 140
-freq_upperlimit= 200
+freq_lowerlimit= 1
+freq_upperlimit= 249
 
 
 V_correctData=[0]*len(fd)
@@ -128,14 +132,14 @@ plt.subplot(2,1,1)
 plt.xlabel("freq(Hz)")
 plt.ylabel("amp(in/s)")
 plt.xlim(0,freq_upperlimit)
-plt.ylim(0,0.02)
+plt.ylim(0,0.0005)
 plt.plot(fd, amp_V_correctData)
 
 plt.subplot(2,1,2)
 plt.xlabel("freq(Hz)")
 plt.ylabel("amp(in/s)")
 plt.xlim(0,freq_upperlimit)
-plt.ylim(0,0.02)
+plt.ylim(0,0.0005)
 plt.plot(fd, amp_V_testData)
 
 
@@ -206,6 +210,10 @@ X1=1/W**2
 Y2=-b/(a**2+b**2)
 X2=1/W
 
+#(3)做振幅的回歸: Y3=b3+b4*X3+b5*X3^2
+Y3=1/(a**2+b**2)
+X3=X1
+
 
 #迴歸資料寫進新的xls檔案裡面
 import xlwt
@@ -218,6 +226,8 @@ sheet1.write(0,2,"X1")
 sheet1.write(0,3,"Y1")
 sheet1.write(0,4,"X2")
 sheet1.write(0,5,"Y2")
+sheet1.write(0,6,"X3")
+sheet1.write(0,7,"Y3")
 
 k=1
 for i in Fre:
@@ -243,12 +253,20 @@ k=1
 for i in Y2:
     sheet1.write(k,5,i)
     k=k+1
+
+k=1
+for i in X3:
+    sheet1.write(k,6,i)
+    k=k+1   
+    
+k=1
+for i in Y3:
+    sheet1.write(k,7,i)
+    k=k+1   
+
     
 linearRegressionData.save('linearRegressionData.xls')
 
-
-
-    
 
 
 

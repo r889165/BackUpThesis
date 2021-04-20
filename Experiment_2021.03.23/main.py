@@ -11,10 +11,10 @@ from scipy.fft import fft
 
 ##1.先處理一開始得到的資料
 #輸入必要資訊
-File= xlrd.open_workbook('knock_vertical.xlsx')
+File= xlrd.open_workbook('noiseData.xlsx')
 Sheet= File.sheet_by_index(0)
 
-total_time= 134
+total_time= 303.9
 dt=0.002
 sample_rate=1/dt
 sample_num= int(sample_rate*total_time)
@@ -24,7 +24,7 @@ time=np.linspace(0, total_time, sample_num, endpoint=False)
 X_direction=[0,3,6]
 Y_direction=[1,4,7]
 Z_direction=[2,5,8]
-directionYouWantToAnaylze= Z_direction
+directionYouWantToAnaylze= X_direction
 
 Geo1Data= Sheet.col_values(directionYouWantToAnaylze[0],23,23+sample_num)
 Geo1Data= np.array(Geo1Data)
@@ -34,8 +34,8 @@ Geo3Data= Sheet.col_values(directionYouWantToAnaylze[2],23,23+sample_num)
 Geo3Data= np.array(Geo3Data)
 
 #輸入要分析的頻率區段
-freq_lowerlimit= 20
-freq_upperlimit= 200
+freq_lowerlimit= 5
+freq_upperlimit= 15
 
 
 #電壓時域圖
@@ -44,23 +44,18 @@ plt.suptitle("E(time)")
 down= min(min(Geo1Data),min(Geo2Data),min(Geo3Data))
 up= max(max(Geo1Data),max(Geo2Data),max(Geo3Data))
 
-plt.subplot(3,1,1)
+plt.subplot(2,1,1)
 plt.xlabel("time(s)")
 plt.ylabel("voltage(V)")
 plt.ylim(down,up)
 plt.plot(time,Geo1Data)
 
-plt.subplot(3,1,2)
+plt.subplot(2,1,2)
 plt.xlabel("time(s)")
 plt.ylabel("voltage(V)")
 plt.ylim(down,up)
 plt.plot(time,Geo2Data)
 
-plt.subplot(3,1,3)
-plt.xlabel("time(s)")
-plt.ylabel("voltage(V)")
-plt.ylim(down,up)
-plt.plot(time,Geo3Data)
 
 
 ##2.電壓時域圖轉頻域圖、使用scipy.fft套件
@@ -85,23 +80,23 @@ plt.suptitle("E(freq)")
 down= min(min(amp_E_Geo1Data),min(amp_E_Geo2Data),min(amp_E_Geo3Data))
 up= max(max(amp_E_Geo1Data),max(amp_E_Geo2Data),max(amp_E_Geo3Data))
 
-plt.subplot(3,1,1)
+plt.subplot(2,1,1)
 plt.xlabel("freq(Hz)")
 plt.ylabel("amp(V)")
 plt.ylim(down,up)
 plt.plot(fd, amp_E_Geo1Data)
 
-plt.subplot(3,1,2)
+plt.subplot(2,1,2)
 plt.xlabel("freq(Hz)")
 plt.ylabel("amp(V)")
 plt.ylim(down,up)
 plt.plot(fd, amp_E_Geo2Data)
 
-plt.subplot(3,1,3)
+plt.figure(3)
+plt.title("E2(freq)-E1(freq)")
 plt.xlabel("freq(Hz)")
-plt.ylabel("amp(V)")
-plt.ylim(down,up)
-plt.plot(fd, amp_E_Geo3Data)
+plt.ylabel("amp")
+plt.plot(fd, amp_E_Geo2Data-amp_E_Geo1Data)
 
 ##3.選擇準確的儀器編號:求響應函數
 #範例:GS-20DX
@@ -139,7 +134,7 @@ wd= 2*np.pi*fd
 Amp = np.abs( const* (1j*wd-z1)*(1j*wd-z2)/(1j*wd-p1)/(1j*wd-p2) )
 Pha = np.angle( const* ((1j*wd-z1)*(1j*wd-z2))/((1j*wd-p1)*(1j*wd-p2)), deg=True)
 
-plt.figure(3)
+plt.figure(4)
 Fig, ax = plt.subplots(2, 1, figsize=(6,8))
 ax[0].loglog(fd, Amp, 'r-')
 ax[0].grid(which='major', axis='both', linewidth=0.75)
@@ -165,6 +160,7 @@ for i in range(len(fd)):
         V_Geo1Data[i]=E_Geo1Data[i]/(const*(1j*wd[i]-z1)*(1j*wd[i]-z2)/(1j*wd[i]-p1)/(1j*wd[i]-p2))
     else:
         V_Geo1Data[i]=0
+        
 V_Geo2Data=V_Geo1Data
 V_Geo3Data=V_Geo1Data
 
@@ -172,8 +168,14 @@ amp_V_Geo1Data= np.abs(V_Geo1Data)
 amp_V_Geo2Data= np.abs(V_Geo2Data)
 amp_V_Geo3Data= np.abs(V_Geo3Data)
 
+plt.figure(5)
+plt.title("velocity(freq)")
+plt.xlabel("freq(Hz)")
+plt.ylabel("amp(in/s)")
+plt.xlim(0,freq_upperlimit)
+plt.plot(fd, amp_V_Geo1Data)
 
-plt.figure(4)
+'''plt.figure(4)
 plt.suptitle("velocity(freq)")
 down= min(min(amp_V_Geo1Data),min(amp_V_Geo2Data),min(amp_V_Geo3Data))
 up= max(max(amp_V_Geo1Data),max(amp_V_Geo2Data),max(amp_V_Geo3Data))
@@ -197,7 +199,7 @@ plt.xlabel("freq(Hz)")
 plt.ylabel("amp(in/s)")
 plt.xlim(0,freq_upperlimit)
 plt.ylim(down,up)
-plt.plot(fd, amp_V_Geo3Data)
+plt.plot(fd, amp_V_Geo3Data)'''
 
 
 ##5.得到待測儀器的響應函數
@@ -227,42 +229,26 @@ amp_T_Geo1Data= np.abs(T_Geo1Data)
 amp_T_Geo2Data= np.abs(T_Geo2Data)
 amp_T_Geo3Data= np.abs(T_Geo3Data)
 
-gap=amp_T_Geo2Data-amp_T_Geo1Data
 
-plt.figure(5)
+plt.figure(6)
 plt.suptitle("response(freq)")
-down= min(min(amp_T_Geo1Data),min(amp_T_Geo2Data),min(amp_T_Geo3Data))
-up= (min(max(amp_T_Geo1Data),max(amp_T_Geo2Data),max(amp_T_Geo3Data))+max(max(amp_T_Geo1Data),max(amp_T_Geo2Data),max(amp_T_Geo3Data)))/2
+down= 0
+up= 100
 
-plt.subplot(3,1,1)
+plt.subplot(2,1,1)
 plt.xlabel("freq(Hz)")
 plt.ylabel("amp")
 plt.xlim(0,freq_upperlimit)
 plt.ylim(down,up)
 plt.plot(fd, amp_T_Geo1Data)
 
-plt.subplot(3,1,2)
+plt.subplot(2,1,2)
 plt.xlabel("freq(Hz)")
 plt.ylabel("amp")
 plt.xlim(0,freq_upperlimit)
 plt.ylim(down,up)
 plt.plot(fd, amp_T_Geo2Data)
 
-plt.subplot(3,1,3)
-plt.xlabel("freq(Hz)")
-plt.ylabel("amp")
-plt.xlim(0,freq_upperlimit)
-plt.ylim(down,up)
-plt.plot(fd, amp_T_Geo3Data)
-
-
-
-plt.figure(6)
-plt.title("$G1-G2(ResponseFreq)$")
-plt.xlim(0,freq_upperlimit)
-plt.xlabel("freq(Hz)")
-plt.ylabel("G2-G1")
-plt.plot(fd,gap)
 
 
 ##6.迴歸求儀器參數(擷取T_testData有值的位置、跟對應的頻率(W))
@@ -272,8 +258,8 @@ for i in range(len(fd)):
     if T_Geo2Data[i]!=0:
         start=i
         break
-end=1
-for i in range(start,len(fd)):
+end=0
+for i in range(start+1,len(fd)):
     if T_Geo2Data[i]==0:
         end=i
         break
@@ -292,6 +278,10 @@ X1=1/W**2
 Y2=-b/(a**2+b**2)
 X2=1/W
 
+#(3)只做振幅的迴歸
+Y3=1/(a**2+b**2)
+X3=X1
+
 
 #迴歸資料寫進新的xls檔案裡面
 import xlwt
@@ -304,6 +294,8 @@ sheet1.write(0,2,"X1")
 sheet1.write(0,3,"Y1")
 sheet1.write(0,4,"X2")
 sheet1.write(0,5,"Y2")
+sheet1.write(0,6,"X3")
+sheet1.write(0,7,"Y3")
 
 k=1
 for i in Fre:
@@ -330,23 +322,21 @@ for i in Y2:
     sheet1.write(k,5,i)
     k=k+1
     
+k=1
+for i in X3:
+    sheet1.write(k,6,i)
+    k=k+1
+    
+k=1
+for i in Y3:
+    sheet1.write(k,7,i)
+    k=k+1
+    
 linearRegressionData.save('linearRegressionData.xls')
 
 
     
 
-
-plt.figure(100)
-a=amp_E_Geo1Data/Amp
-plt.plot(fd,a)
-plt.xlim(0,200)
-plt.ylim(0,10**(-5))
-
-plt.figure(101)
-b=amp_E_Geo2Data/amp_V_Geo2Data
-plt.plot(fd,b)
-plt.xlim(0,200)
-plt.ylim(0,2500)
 
     
 
