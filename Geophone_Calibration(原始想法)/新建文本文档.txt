@@ -1,0 +1,2 @@
+steepest decent
+參數組猜測

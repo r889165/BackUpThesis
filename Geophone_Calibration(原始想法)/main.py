@@ -12,7 +12,7 @@ from scipy.fft import fft
 ##1.先處理一開始得到的資料(電壓時域圖)
 #取樣頻率:(一秒取幾個電壓值)
 sample_num= 25000
-total_time= 5
+total_time= 50
 sample_rate= sample_num/total_time
 time=np.linspace(0, total_time, sample_num, endpoint=False)
 
