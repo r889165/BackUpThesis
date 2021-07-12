@@ -152,58 +152,58 @@ amp_V_Geo1= df_select["amp_V_Geo1(m/s)"].values
 amp_E_Geo2= df_select["amp_E_Geo2(volt)"].values
 
 ##最陡梯度法(SteepestDescentMethod)猜待測地聲儀器參數組
-G= G0
-a= a0
-b= 2*m*Rt
-h0= b0
+# G= G0
+# a= a0
+# b= 2*m*Rt
+# h0= b0
 
-learning_rate= -0.9
-guess_time= 10000
-end_condition= 0
-recordingBox= np.zeros((guess_time,9))
-title= ["G","a","b","h0","z","下一步(G)","下一步(a)","下一步(b)","下一步(h0)"]
+# learning_rate= -0.9
+# guess_time= 10000
+# end_condition= 0
+# recordingBox= np.zeros((guess_time,9))
+# title= ["G","a","b","h0","z","下一步(G)","下一步(a)","下一步(b)","下一步(h0)"]
 
-z=0
-nextstep_G=0
-nextstep_a=0
-nextstep_b=0
-nextstep_h0=0
-#用矩陣運算
-for n in range(guess_time):
-    temp1= G**(-2)*a**4
-    temp2= (-2)*G**(-2)*a**2+4*G**(-2)*a**2*h0**2+8*a*b**(-1)*h0+4*G**2*b**(-2)
-    temp3= (-2)*G**(-3)*a**4
-    temp4= 4*G**(-3)*a**2-8*G**(-3)*a**2*h0**2+8*G*b**(-2)
-    temp5= 4*G**(-2)*a**3
-    temp6= 4*G**(-2)*a+8*G**(-2)*a*h0**2+8*h0*b**(-1)
-    temp7= (-8)*a*h0*b**(-2)-8*G**2*b**(-3)
-    temp8= 8*G**(-2)*a**2*h0+8*a*b**(-1)
+# z=0
+# nextstep_G=0
+# nextstep_a=0
+# nextstep_b=0
+# nextstep_h0=0
+# #用矩陣運算
+# for n in range(guess_time):
+#     temp1= G**(-2)*a**4
+#     temp2= (-2)*G**(-2)*a**2+4*G**(-2)*a**2*h0**2+8*a*b**(-1)*h0+4*G**2*b**(-2)
+#     temp3= (-2)*G**(-3)*a**4
+#     temp4= 4*G**(-3)*a**2-8*G**(-3)*a**2*h0**2+8*G*b**(-2)
+#     temp5= 4*G**(-2)*a**3
+#     temp6= 4*G**(-2)*a+8*G**(-2)*a*h0**2+8*h0*b**(-1)
+#     temp7= (-8)*a*h0*b**(-2)-8*G**2*b**(-3)
+#     temp8= 8*G**(-2)*a**2*h0+8*a*b**(-1)
 
-    z= ((amp_V_Geo1)**2-(2*amp_V_Geo1*amp_E_Geo2/(wd**2))*(temp1+temp2*wd**2+G**(-2)*wd**4)**(0.5)+(amp_E_Geo2**2/wd**4)*(temp1+temp2*wd**2+G**(-2)*wd**4)).sum()
-    nextstep_G= learning_rate*((amp_E_Geo2**2/wd**4)*(temp3+temp4*wd**2-2*G**(-3)*wd**4)-(amp_V_Geo1*amp_E_Geo2/(wd**2))*(temp1+temp2*wd**2+G**(-2)*wd**4)**(-0.5)*(temp3+temp4*wd**2-2*G**(-3)*wd**4)).sum()
-    nextstep_a= learning_rate*((amp_E_Geo2**2/wd**4)*(temp5+temp6*wd**2)-(amp_V_Geo1*amp_E_Geo2/(wd**2))*(temp1+temp2*wd**2+G**(-2)*wd**4)**(-0.5)*(temp5+temp6*wd**2)).sum()
-    nextstep_b= learning_rate*((amp_E_Geo2**2/wd**4)*temp7-(amp_V_Geo1*amp_E_Geo2)*(temp1+temp2*wd**2+G**(-2)*wd**4)**(-0.5)*temp7).sum()  
-    nextstep_h0= learning_rate*((amp_E_Geo2**2/wd**4)*temp8-(amp_V_Geo1*amp_E_Geo2)*(temp1+temp2*wd**2+G**(-2)*wd**4)**(-0.5)*temp8).sum()
+#     z= ((amp_V_Geo1)**2-(2*amp_V_Geo1*amp_E_Geo2/(wd**2))*(temp1+temp2*wd**2+G**(-2)*wd**4)**(0.5)+(amp_E_Geo2**2/wd**4)*(temp1+temp2*wd**2+G**(-2)*wd**4)).sum()
+#     nextstep_G= learning_rate*((amp_E_Geo2**2/wd**4)*(temp3+temp4*wd**2-2*G**(-3)*wd**4)-(amp_V_Geo1*amp_E_Geo2/(wd**2))*(temp1+temp2*wd**2+G**(-2)*wd**4)**(-0.5)*(temp3+temp4*wd**2-2*G**(-3)*wd**4)).sum()
+#     nextstep_a= learning_rate*((amp_E_Geo2**2/wd**4)*(temp5+temp6*wd**2)-(amp_V_Geo1*amp_E_Geo2/(wd**2))*(temp1+temp2*wd**2+G**(-2)*wd**4)**(-0.5)*(temp5+temp6*wd**2)).sum()
+#     nextstep_b= learning_rate*((amp_E_Geo2**2/wd**4)*temp7-(amp_V_Geo1*amp_E_Geo2)*(temp1+temp2*wd**2+G**(-2)*wd**4)**(-0.5)*temp7).sum()  
+#     nextstep_h0= learning_rate*((amp_E_Geo2**2/wd**4)*temp8-(amp_V_Geo1*amp_E_Geo2)*(temp1+temp2*wd**2+G**(-2)*wd**4)**(-0.5)*temp8).sum()
 
-    recordingBox[n,0]= G
-    recordingBox[n,1]= a
-    recordingBox[n,2]= b
-    recordingBox[n,3]= h0
-    recordingBox[n,4]= z
-    recordingBox[n,5]= nextstep_G
-    recordingBox[n,6]= nextstep_a
-    recordingBox[n,7]= nextstep_b
-    recordingBox[n,8]= nextstep_h0
+#     recordingBox[n,0]= G
+#     recordingBox[n,1]= a
+#     recordingBox[n,2]= b
+#     recordingBox[n,3]= h0
+#     recordingBox[n,4]= z
+#     recordingBox[n,5]= nextstep_G
+#     recordingBox[n,6]= nextstep_a
+#     recordingBox[n,7]= nextstep_b
+#     recordingBox[n,8]= nextstep_h0
     
-    #走向下一步
-    G+= nextstep_G
-    a+= nextstep_a
-    b+= nextstep_b
-    h0+= nextstep_h0
+#     #走向下一步
+#     G+= nextstep_G
+#     a+= nextstep_a
+#     b+= nextstep_b
+#     h0+= nextstep_h0
     
-print('Ok')
+# print('Ok')
 
-wb= xw.Book("Result.xlsx")
-sheet= wb.sheets.add()
-sheet.range("A1").value= title
-sheet.range("A2").value= recordingBox
+# wb= xw.Book("Result.xlsx")
+# sheet= wb.sheets.add()
+# sheet.range("A1").value= title
+# sheet.range("A2").value= recordingBox
